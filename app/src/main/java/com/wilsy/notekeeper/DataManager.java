@@ -3,10 +3,6 @@ package com.wilsy.notekeeper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Wilsy.
- */
-
 public class DataManager {
     private static DataManager ourInstance = null;
 

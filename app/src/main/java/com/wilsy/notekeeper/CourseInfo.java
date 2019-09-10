@@ -1,12 +1,11 @@
 package com.wilsy.notekeeper;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
-/**
- * Created by Wilsy.
- */
 
 public final class CourseInfo implements Parcelable {
     private final String mCourseId;
@@ -19,25 +18,12 @@ public final class CourseInfo implements Parcelable {
         mModules = modules;
     }
 
-    protected CourseInfo(Parcel in, List<ModuleInfo> mModules) {
-        mCourseId = in.readString();
-        mTitle = in.readString();
-        this.mModules = mModules;
+    private CourseInfo(Parcel source) {
+        mCourseId = source.readString();
+        mTitle = source.readString();
+        mModules = new ArrayList<>();
+        source.readTypedList(mModules, ModuleInfo.CREATOR);
     }
-
-    public static final Creator<CourseInfo> CREATOR = new Creator<CourseInfo>() {
-        public List<ModuleInfo> mModules;
-
-        @Override
-        public CourseInfo createFromParcel(Parcel in) {
-            return new CourseInfo(in, mModules);
-        }
-
-        @Override
-        public CourseInfo[] newArray(int size) {
-            return new CourseInfo[size];
-        }
-    };
 
     public String getCourseId() {
         return mCourseId;
@@ -93,15 +79,30 @@ public final class CourseInfo implements Parcelable {
     public int hashCode() {
         return mCourseId.hashCode();
     }
-
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mCourseId);
-        parcel.writeString(mTitle);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mCourseId);
+        dest.writeString(mTitle);
+        dest.writeTypedList(mModules);
     }
+
+    public static final Creator<CourseInfo> CREATOR =
+            new Creator<CourseInfo>() {
+
+                @Override
+                public CourseInfo createFromParcel(Parcel source) {
+                    return new CourseInfo(source);
+                }
+
+                @Override
+                public CourseInfo[] newArray(int size) {
+                    return new CourseInfo[size];
+                }
+            };
+
 }
